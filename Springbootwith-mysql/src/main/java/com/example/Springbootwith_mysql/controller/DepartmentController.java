@@ -36,6 +36,19 @@ public class DepartmentController {
         DepartmentDto department = departmentService.createDepartment(departmentDto);
         return new ResponseEntity<>(department, HttpStatus.CREATED);
     }
-
-
+    @GetMapping("{id}")
+    public ResponseEntity<DepartmentDto> getDepartmentById(@PathVariable ("id") Long departmentid){
+        DepartmentDto departmentdto = departmentService.getDepartmentById(departmentid);
+        return ResponseEntity.ok(departmentdto);
+    }
+    @PutMapping("{id}")
+    public ResponseEntity<DepartmentDto> updateDepartment(@PathVariable("id") Long departmentid , @RequestBody DepartmentDto updatedepartmentDto){
+        DepartmentDto departmentdto = departmentService.updateDepartment(departmentid, updatedepartmentDto);
+        return ResponseEntity.ok(departmentdto);
+    }
+    @DeleteMapping("{id}")
+    public ResponseEntity<String>  deleteDepartment(@PathVariable("id") Long departmentid){
+        departmentService.deleteDepartment(departmentid);
+        return ResponseEntity.ok("Department deleted successfully");
+    }
 }

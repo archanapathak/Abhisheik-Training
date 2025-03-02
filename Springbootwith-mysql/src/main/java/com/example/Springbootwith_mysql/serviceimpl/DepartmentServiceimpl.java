@@ -3,6 +3,7 @@ package com.example.Springbootwith_mysql.serviceimpl;
 import com.example.Springbootwith_mysql.entity.Department;
 import com.example.Springbootwith_mysql.entity.DepartmentDto;
 import com.example.Springbootwith_mysql.entity.DepartmentMapper;
+import com.example.Springbootwith_mysql.exception.ResourceNoFoundException;
 import com.example.Springbootwith_mysql.repository.DepartmentJpaRepository;
 import com.example.Springbootwith_mysql.service.DepartmentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,5 +33,37 @@ public class DepartmentServiceimpl implements DepartmentService {
         Department department =  DepartmentMapper.mapToDepartment(departmentDto);
         Department saveddepartment  =   departmentJpaRepository.save(department);
         return DepartmentMapper.mapToDepartmentDto(saveddepartment);
+    }
+
+    @Override
+    public DepartmentDto getDepartmentById(Long departmentId) {
+
+           //Department  department  = departmentJpaRepository.findById(departmentId).get();
+        Department  department  = departmentJpaRepository.findById(departmentId).orElseThrow(
+                ()-> new ResourceNoFoundException("Department does not exist "+departmentId)
+        );
+
+        return DepartmentMapper.mapToDepartmentDto(department);
+    }
+
+    @Override
+    public DepartmentDto updateDepartment(Long departmentId, DepartmentDto updatedDepartment) {
+      Department searchdepartment=   departmentJpaRepository.findById(departmentId).orElseThrow(
+                 ()-> new ResourceNoFoundException("Department does not exist "+departmentId)
+         );
+
+      searchdepartment.setDepartment_name(updatedDepartment.getDepartmentname());
+      searchdepartment.setDepartment_description(updatedDepartment.getDepartmentdescription());
+      Department updateddepartment = departmentJpaRepository.save(searchdepartment);
+        return DepartmentMapper.mapToDepartmentDto(updateddepartment);
+    }
+
+    @Override
+    public void deleteDepartment(Long departmentId) {
+     Department department=    departmentJpaRepository.findById(departmentId).orElseThrow(
+                ()-> new ResourceNoFoundException("Department does not exist "+departmentId)
+        );
+        departmentJpaRepository.delete(department);
+
     }
 }
